@@ -8,7 +8,9 @@ app.use(cors())
 
 const init = 50;
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send({
+    "status": "Running"
+}))
 
 //log in
 app.get('/login/:address/:password', (req, res) => {
@@ -24,22 +26,32 @@ app.get('/login/:address/:password', (req, res) => {
             return;
         }
     }
-    res.send("Error, incorrect address or password.");
+    res.send({
+        "status": "Error"
+    });
 });
 
 //info
 app.get('/information/:address', (req, res) => {
     let address = req.params.address;
+    if (address != undefined) {
+        for (let i = 0; wallets.length; i++) {
+            if (wallets[i].address == address) {
+                res.send({
+                    "address": wallets[i].address,
+                    "balance": wallets[i].balance,
+                    "history": wallets[i].history
+                })
+            }
 
-    for (let i = 0; wallets.length; i++) {
-        if (wallets[i].address == address) {
-            res.send({
-                "address": wallets[i].address,
-                "balance": wallets[i].balance,
-                "history": wallets[i].history
-            })
         }
+    } else {
+        res.send({
+            "status": "Error"
+        })
     }
+
+
 })
 
 //register
@@ -60,11 +72,46 @@ app.get('/balances', (req, res) => {
     let string = "";
 
     for (let i = 0; i < wallets.length; i++) {
-        string += wallets[i].address + ": " + wallets[i].balance + "\n";
+        string += wallets[i].address + ": " + wallets[i].balance + "   <----->   ";
     }
 
-    res.send(string);
+    res.send({
+        "balances": "+" +
+            string
+    });
 });
+
+//check hash
+app.get('/hash/:hash', (req, res) => {
+    for (let i = 0; i < ledger.length; i++) {
+        if (ledger[i].hash == req.params.hash) {
+            res.send({
+                "hash": ledger[i].hash,
+                "from": ledger[i].from,
+                "to": ledger[i].to,
+                "amount": ledger[i].amount
+            })
+        }
+    }
+
+    res.send({
+        "status": "Error"
+    })
+})
+
+app.get('/ledger', (req, res) => {
+    let l = []
+
+    for (let i = 0; i < ledger.length; i++) {
+        if (ledger[i].hash != undefined) {
+            l.push(ledger[i])
+        }
+    }
+
+    res.send({
+        "Ledger": l
+    })
+})
 
 //transfer
 app.get('/transfer/:from/:to/:amount/:password', (req, res) => {
@@ -94,21 +141,25 @@ app.get('/transfer/:from/:to/:amount/:password', (req, res) => {
                 "status": "success"
             })
         } else {
-            res.send("Error: " + status);
+            res.send({
+                "status": "Error: " + status
+            });
         }
     } else {
-        res.send("Error. Sender or Recipient not found.");
+        res.send({
+            "status": "Error. Sender or Recipient not found."
+        });
     }
 })
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Backend running on port: ${port}!`))
 
 //setinterval
 setInterval(() => {
     for (let i = 0; i < wallets.length; i++) {
         wallets[i].calculateBalance();
     }
-}, 5000);
+});
 
 //Ledger <- Transactions <- Data
 let ledger = [];
@@ -152,7 +203,12 @@ class Wallet {
         let options = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
         for (let i = 0; i < 13; i++) {
-            string += options[Math.round(Math.random() * options.length - 1)];
+            let addition = options[Math.round(Math.random() * (options.length - 1))]
+            if (addition != undefined) {
+                string += addition;
+            } else {
+                string += "4";
+            }
         }
 
         return string;

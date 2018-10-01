@@ -18,6 +18,7 @@
   "homepage": "https://github.com/MvA-Projects/MvA-Cryptocurrency-JS-Backend#readme",
   "dependencies": {
     "cors": "^2.8.4",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "openode": "^1.6.2"
   }
 }
