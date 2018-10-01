@@ -1,0 +1,22 @@
+{
+  "name": "mva-cryptocurrency-js-backend",
+  "version": "1.0.0",
+  "description": "A cryptocurrency made in JavaScript.",
+  "main": "backend.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MvA-Projects/MvA-Cryptocurrency-JS-Backend.git"
+  },
+  "author": "MvA Projects - Max van Asten",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MvA-Projects/MvA-Cryptocurrency-JS-Backend/issues"
+  },
+  "homepage": "https://github.com/MvA-Projects/MvA-Cryptocurrency-JS-Backend#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
