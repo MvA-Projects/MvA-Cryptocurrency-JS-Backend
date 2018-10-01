@@ -17,7 +17,10 @@ app.get('/login/:address/:password', (req, res) => {
 
     for (let i = 0; i < wallets.length; i++) {
         if (wallets[i].address == address && wallets[i].password == password) {
-            res.send("Success!");
+            res.send({
+                "status": "success",
+                "address": wallets[i].address
+            });
             return;
         }
     }
@@ -30,7 +33,11 @@ app.get('/information/:address', (req, res) => {
 
     for (let i = 0; wallets.length; i++) {
         if (wallets[i].address == address) {
-            res.send(wallets[i].address + " " + wallets[i].balance + " " + wallets[i].history);
+            res.send({
+                "address": wallets[i].address,
+                "balance": wallets[i].balance,
+                "history": wallets[i].history
+            })
         }
     }
 })
@@ -42,7 +49,10 @@ app.get('/create/:password', (req, res) => {
     let wallet = new Wallet(password, init);
     wallets.push(wallet);
 
-    res.send("Succesfully created your wallet. Address: " + wallet.address + "\n\nWrite your address down somewhere so you can log in later.");
+    res.send({
+        "status": "Success",
+        "address": wallet.address
+    });
 });
 
 //full view
@@ -80,7 +90,9 @@ app.get('/transfer/:from/:to/:amount/:password', (req, res) => {
     if (s != null && r != null) {
         let status = s.transfer(r.address, amount);
         if (status == true) {
-            res.send("Succesfully transferred " + amount + " to " + r.address);
+            res.send({
+                "status": "success"
+            })
         } else {
             res.send("Error: " + status);
         }
